@@ -13,7 +13,7 @@
     <module name="vr_content" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="D:/Program Files/Python2.7/Lib/site-packages/scrapy/cmdline.py" />
-    <option name="PARAMETERS" value="crawl dmoz" />
+    <option name="PARAMETERS" value="crawl android_app -o result -t csv --logfile=log" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <method />
   </configuration>
