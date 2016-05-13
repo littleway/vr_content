@@ -28,3 +28,4 @@ class VrAppItem(scrapy.Item):
     icon_url = scrapy.Field()
     detail_image_url = scrapy.Field()
     download_url = scrapy.Field()
+
