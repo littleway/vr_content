@@ -51,6 +51,8 @@ class AppSpider(scrapy.Spider):
             response.xpath('//div[@class="tool-s-details clearfix"]/p[@class="file-size"]/text()').extract()[0].strip())
         item['language'] = self._str_post_process(
             response.xpath('//p[@class="tool-language"]/text()').extract()[0].strip())
+        item['version'] = self._str_post_process(
+            response.xpath('//p[@class="tool-version"]/text()').extract()[0])
         try:
             item['developer'] =\
                 response.xpath('//p[@class="tool-developer"]/span[2]/text()').extract()[0].strip()
@@ -80,8 +82,8 @@ class AppSpider(scrapy.Spider):
                       meta={'item': item}, headers=self.post_header, callback=self.parse_download)
 
     @staticmethod
-    def parse_download(self, response):
-        response.meta['item']['download_url'] = self._str_post_process(json.loads(response.body)['obj'])
+    def parse_download(response):
+        response.meta['item']['download_url'] = AppSpider._str_post_process(json.loads(response.body)['obj'])
         yield response.meta['item']
 
     @staticmethod
@@ -92,7 +94,7 @@ class AppSpider(scrapy.Spider):
         return field_str
 
     @staticmethod
-    def _get_download_post_body(self, xpath_node):
+    def _get_download_post_body(xpath_node):
         download_args_str = xpath_node.xpath('./@onclick').extract()[0].strip()
         start = download_args_str.find('(')
         delimiter = download_args_str.find(',')
@@ -100,26 +102,26 @@ class AppSpider(scrapy.Spider):
         return "id=" + download_args_str[start+1:delimiter] + "&pf=" + download_args_str[delimiter+1:end]
 
     @staticmethod
-    def _get_detail_image_url(self, xpath_node):
+    def _get_detail_image_url(xpath_node):
         url = []
         for node in xpath_node.xpath('./li'):
             try:
-                url.append(self._str_post_process(node.xpath('./img/@src').extract()[0].strip()[0:-5]))
+                url.append(AppSpider._str_post_process(node.xpath('./img/@src').extract()[0].strip()[0:-5]))
             except:
-                url.append(self._str_post_process(node.xpath('./iframe/@src').extract()[0].strip()[0:-5]))
+                url.append(AppSpider._str_post_process(node.xpath('./iframe/@src').extract()[0].strip()[0:-5]))
         return url
 
     @staticmethod
-    def _get_tags(self, xpath_node):
+    def _get_tags(xpath_node):
         tags = []
         for node in xpath_node.xpath('./p'):
             tags.append(
-                self._str_post_process(
+                AppSpider._str_post_process(
                     node.xpath('./text()').extract()[0].strip()))
         return tags
 
     @staticmethod
-    def _get_app_type(self, xpath_node):
+    def _get_app_type(xpath_node):
         value = ''
         is_begin = True
         for node in xpath_node.xpath('./span[2]/a'):

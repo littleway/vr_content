@@ -26,6 +26,7 @@ FIELDS_TO_EXPORT = [
     'publish_date',
     'file_size_mb',
     'language',
+    'version',
     'developer',
     'hardware_support',
     'control_device',

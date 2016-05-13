@@ -18,6 +18,7 @@ class VrAppItem(scrapy.Item):
     publish_date = scrapy.Field()
     file_size_mb = scrapy.Field()
     language = scrapy.Field()
+    version = scrapy.Field()
     developer = scrapy.Field()
     hardware_support = scrapy.Field()
     control_device = scrapy.Field()
