@@ -17,27 +17,27 @@ NEWSPIDER_MODULE = 'vr_content.spiders'
 FEED_EXPORTERS = {
     'csv': 'vr_content.my_csv_item_exporter.MyCsvItemExporter',
 }
-# output by my order
-FIELDS_TO_EXPORT = [
-    'page_index',
-    'app_index',
-    'os',
-    'name',
-    'publish_date',
-    'file_size_mb',
-    'language',
-    'version',
-    'developer',
-    'hardware_support',
-    'control_device',
-    'app_type',
-    'tags',
-    'star_rating',
-    'app_introduce',
-    'icon_url',
-    'detail_image_url',
-    'download_url'
-]
+# # output by my order
+# FIELDS_TO_EXPORT = [
+#     'page_index',
+#     'app_index',
+#     'os',
+#     'name',
+#     'publish_date',
+#     'file_size_mb',
+#     'language',
+#     'version',
+#     'developer',
+#     'hardware_support',
+#     'control_device',
+#     'app_type',
+#     'tags',
+#     'star_rating',
+#     'app_introduce',
+#     'icon_url',
+#     'detail_image_url',
+#     'download_url'
+# ]
 CSV_DELIMITER = "\t" # For tab
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

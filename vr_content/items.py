@@ -30,3 +30,10 @@ class VrAppItem(scrapy.Item):
     detail_image_url = scrapy.Field()
     download_url = scrapy.Field()
 
+class VrMovieItem(scrapy.Item):
+    page_index = scrapy.Field()
+    app_index = scrapy.Field()
+    os = scrapy.Field()
+    name = scrapy.Field()
+
+
