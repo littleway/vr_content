@@ -2,7 +2,7 @@ import scrapy
 from scrapy.http.request import Request
 from scrapy.http import Headers
 from vr_content.items import VrAppItem
-import json
+from vr_content.spiders.item_spider import ItemSpider
 
 
 class MovieSpider(scrapy.Spider):
@@ -28,7 +28,7 @@ class MovieSpider(scrapy.Spider):
         #                   meta={"page_index": response.meta['page_index'], "app_index": str(i)})
 
 
-class AppSpider(scrapy.Spider):
+class AppSpider(ItemSpider):
     name = "android_app"
     allowed_domains = ["591vr.com"]
     start_urls = [
@@ -37,9 +37,6 @@ class AppSpider(scrapy.Spider):
     page_urls = {page_index:
                      "http://www.591vr.com/category2.html?acid=&sort=0&eid=&phid=&rid=&page=%d" % page_index
                  for page_index in range(1, 10)}
-    post_header = Headers()
-    post_header.setlist("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-    post_header.setlist("X-Requested-With", "XMLHttpRequest")
 
     def parse(self, response):
         yield Request("http://www.591vr.com/changeplatform.html", method="POST", body="pval=2",
@@ -49,6 +46,25 @@ class AppSpider(scrapy.Spider):
         for page_index, url in self.page_urls.items():
             yield Request(url, dont_filter=True, meta={"page_index": page_index}, callback=self.page_parse)
 
+    def item_parse(self, response):
+        item = self._get_base_parsed_item(response)
+        item['os'] = "Android"
+        try:
+            item['hardware_support'] =\
+                response.xpath('//div[@class="tool-device clearfix"]/p/text()').extract()[0]
+        except:
+            item['hardware_support'] = 'NULL'
+        try:
+            item['control_device'] =\
+                response.xpath('//div[@class="tool-device mt5 clearfix"][1]/p/text()').extract()[0]
+        except:
+            item['control_device'] = 'NULL'
+
+        post_body = self._get_download_post_body(response.xpath('//ul[@class="type-main clearfix"]/li/a'))
+        yield Request("http://www.591vr.com/downloadApp.html", method="POST", body=post_body,
+                      meta={'item': item}, headers=self.post_header, callback=self.parse_download)
+
+    '''
     def page_parse(self, response):
         filename = response.url.split("/")[-2] + str(response.meta['page_index'])
         with open(filename, 'wb') as f:
@@ -62,7 +78,7 @@ class AppSpider(scrapy.Spider):
 
     def app_parse(self, response):
         item = VrAppItem()
-        item['app_index'] = response.meta['app_index']
+        item['item_index_in_page'] = response.meta['app_index']
         item['page_index'] = response.meta['page_index']
         item['os'] = "Android"
 
@@ -90,11 +106,11 @@ class AppSpider(scrapy.Spider):
                 response.xpath('//div[@class="tool-device mt5 clearfix"][1]/p/text()').extract()[0]
         except:
             item['control_device'] = 'NULL'
-        item['app_type'] = self._get_app_type(
+        item['application_type'] = self._get_app_type(
             response.xpath('//div[@class="tool-device mt5 clearfix"][2]'))
         item['tags'] = self._get_tags(response.xpath('//div[@class="tool-type clearfix"]'))
         item['star_rating'] = len(response.xpath('//div[@class="tool-start clearfix"]/ul/li'))
-        item['app_introduce'] = self._str_post_process(
+        item['introduce'] = self._str_post_process(
             response.xpath('//div[@id="share_summary"]/text()').extract()[0].strip())
         item['icon_url'] = self._str_post_process(response.xpath('//img[@id="share-pic"]/@src').extract()[0])
         item['detail_image_url'] = self._get_detail_image_url(response.xpath('//ul[@class="rslides"]'))
@@ -170,6 +186,7 @@ class AppSpider(scrapy.Spider):
             start = file_size_str.rfind(' ', 0, last)
             value = file_size_str[start + 1: last]
         return value
+    '''
 
     # # for one app test
     # def start_requests(self):

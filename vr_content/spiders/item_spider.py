@@ -1,12 +1,12 @@
 import scrapy
 from scrapy.http.request import Request
 from scrapy.http import Headers
-from scrapy.item import Item
+from vr_content.items import ItemFactory
 import json
 
 
 class ItemSpider(scrapy.Spider):
-    name = "android_app"
+    name = "item"
     allowed_domains = ["591vr.com"]
     start_urls = [
         "http://www.591vr.com/category2.html",
@@ -34,12 +34,15 @@ class ItemSpider(scrapy.Spider):
         for i in range(len(apps)):
             app = apps[i]
             url = "http://www.591vr.com" + app.xpath('./a/@href').extract()[0]
-            yield Request(url, dont_filter=True, callback=self.app_parse,
-                          meta={"page_index": response.meta['page_index'], "app_index": str(i)})
+            yield Request(url, dont_filter=True, callback=self.item_parse,
+                          meta={"page_index": response.meta['page_index'], "item_index_in_page": str(i)})
 
-    def app_parse(self, response):
-        item = Item()
-        item['app_index'] = response.meta['app_index']
+    def item_parse(self, response):
+        pass
+
+    def _get_base_parsed_item(self, response):
+        item = ItemFactory.create_item(self.name)
+        item['item_index_in_page'] = response.meta['item_index_in_page']
         item['page_index'] = response.meta['page_index']
         item['os'] = "Android"
 
@@ -67,18 +70,19 @@ class ItemSpider(scrapy.Spider):
                 response.xpath('//div[@class="tool-device mt5 clearfix"][1]/p/text()').extract()[0]
         except:
             item['control_device'] = 'NULL'
-        item['app_type'] = self._get_app_type(
+        item['application_type'] = self._get_app_type(
             response.xpath('//div[@class="tool-device mt5 clearfix"][2]'))
         item['tags'] = self._get_tags(response.xpath('//div[@class="tool-type clearfix"]'))
         item['star_rating'] = len(response.xpath('//div[@class="tool-start clearfix"]/ul/li'))
-        item['app_introduce'] = self._str_post_process(
+        item['introduce'] = self._str_post_process(
             response.xpath('//div[@id="share_summary"]/text()').extract()[0].strip())
         item['icon_url'] = self._str_post_process(response.xpath('//img[@id="share-pic"]/@src').extract()[0])
         item['detail_image_url'] = self._get_detail_image_url(response.xpath('//ul[@class="rslides"]'))
 
-        post_body = self._get_download_post_body(response.xpath('//ul[@class="type-main clearfix"]/li/a'))
-        yield Request("http://www.591vr.com/downloadApp.html", method="POST", body=post_body,
-                      meta={'item': item}, headers=self.post_header, callback=self.parse_download)
+        return item
+        # post_body = self._get_download_post_body(response.xpath('//ul[@class="type-main clearfix"]/li/a'))
+        # yield Request("http://www.591vr.com/downloadApp.html", method="POST", body=post_body,
+        #               meta={'item': item}, headers=self.post_header, callback=self.parse_download)
 
     @staticmethod
     def parse_download(response):

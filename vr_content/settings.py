@@ -30,10 +30,10 @@ FEED_EXPORTERS = {
 #     'developer',
 #     'hardware_support',
 #     'control_device',
-#     'app_type',
+#     'application_type',
 #     'tags',
 #     'star_rating',
-#     'app_introduce',
+#     'introduce',
 #     'icon_url',
 #     'detail_image_url',
 #     'download_url'
