@@ -44,7 +44,6 @@ class ItemSpider(scrapy.Spider):
         item = ItemFactory.create_item(self.name)
         item['item_index_in_page'] = response.meta['item_index_in_page']
         item['page_index'] = response.meta['page_index']
-        item['os'] = "Android"
 
         item['name'] = response.xpath('//h3/text()').extract()[0].strip()
         item['publish_date'] = self._str_post_process(
@@ -60,16 +59,6 @@ class ItemSpider(scrapy.Spider):
                 response.xpath('//p[@class="tool-developer"]/span[2]/text()').extract()[0].strip()
         except:
             item['developer'] = 'NULL'
-        try:
-            item['hardware_support'] =\
-                response.xpath('//div[@class="tool-device clearfix"]/p/text()').extract()[0]
-        except:
-            item['hardware_support'] = 'NULL'
-        try:
-            item['control_device'] =\
-                response.xpath('//div[@class="tool-device mt5 clearfix"][1]/p/text()').extract()[0]
-        except:
-            item['control_device'] = 'NULL'
         item['application_type'] = self._get_app_type(
             response.xpath('//div[@class="tool-device mt5 clearfix"][2]'))
         item['tags'] = self._get_tags(response.xpath('//div[@class="tool-type clearfix"]'))
