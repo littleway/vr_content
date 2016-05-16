@@ -123,9 +123,14 @@ class ItemSpider(scrapy.Spider):
     def _get_file_size(self, file_size_str):
         value = "-1"
         last = file_size_str.find('M')
-        if last == "-1":
-            self.logger.error('can not find file size: %s', file_size_str)
-            raise Exception
+        if last == -1:
+            last = file_size_str.find('G')
+            if last == -1:
+                self.logger.error('can not find file size: %s', file_size_str)
+                value = "0"
+            else:
+                start = file_size_str.rfind(' ', 0, last)
+                value = str(float(file_size_str[start + 1: last]) * 1024)
         else:
             start = file_size_str.rfind(' ', 0, last)
             value = file_size_str[start + 1: last]
