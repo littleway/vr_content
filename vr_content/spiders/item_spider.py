@@ -42,6 +42,7 @@ class ItemSpider(scrapy.Spider):
 
     def _get_base_parsed_item(self, response):
         item = ItemFactory.create_item(self.name)
+        item['item_url'] = response.url
         item['item_index_in_page'] = response.meta['item_index_in_page']
         item['page_index'] = response.meta['page_index']
 
@@ -66,7 +67,6 @@ class ItemSpider(scrapy.Spider):
         item['introduce'] = self._str_post_process(
             response.xpath('//div[@id="share_summary"]/text()').extract()[0].strip())
         item['icon_url'] = self._str_post_process(response.xpath('//img[@id="share-pic"]/@src').extract()[0])
-        item['detail_image_url'] = self._get_detail_image_url(response.xpath('//ul[@class="rslides"]'))
 
         return item
         # post_body = self._get_download_post_body(response.xpath('//ul[@class="type-main clearfix"]/li/a'))
@@ -94,16 +94,6 @@ class ItemSpider(scrapy.Spider):
         return "id=" + download_args_str[start+1:delimiter] + "&pf=" + download_args_str[delimiter+1:end]
 
     @staticmethod
-    def _get_detail_image_url(xpath_node):
-        url = []
-        for node in xpath_node.xpath('./li'):
-            try:
-                url.append(ItemSpider._str_post_process(node.xpath('./img/@src').extract()[0].strip()[0:-5]))
-            except:
-                url.append(ItemSpider._get_video_url(node.xpath('./iframe/@src').extract()[0]))
-        return url
-
-    @staticmethod
     def _get_video_url(src_str):
         start = src_str.find('=')
         end = src_str.find('&img')
@@ -116,7 +106,7 @@ class ItemSpider(scrapy.Spider):
             tags.append(
                 ItemSpider._str_post_process(
                     node.xpath('./text()').extract()[0].strip()))
-        return tags
+        return tags if len(tags) > 0 else "NULL"
 
     @staticmethod
     def _get_app_type(xpath_node):

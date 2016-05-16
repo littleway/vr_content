@@ -18,9 +18,11 @@ FEED_EXPORTERS = {
     'csv': 'vr_content.my_csv_item_exporter.MyCsvItemExporter',
 }
 # # output by my order
+# #for app
 # FIELDS_TO_EXPORT = [
+#     'item_url',
 #     'page_index',
-#     'app_index',
+#     'item_index_in_page',
 #     'os',
 #     'name',
 #     'publish_date',
@@ -38,6 +40,24 @@ FEED_EXPORTERS = {
 #     'detail_image_url',
 #     'download_url'
 # ]
+# for movie
+FIELDS_TO_EXPORT = [
+    'item_url',
+    'page_index',
+    'item_index_in_page',
+    'name',
+    'publish_date',
+    'file_size_mb',
+    'language',
+    'version',
+    'developer',
+    'application_type',
+    'tags',
+    'star_rating',
+    'introduce',
+    'icon_url',
+    'download_url'
+]
 CSV_DELIMITER = "\t" # For tab
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

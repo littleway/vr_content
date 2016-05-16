@@ -9,6 +9,7 @@ import scrapy
 
 
 class VrItem(scrapy.Item):
+    item_url = scrapy.Field()
     page_index = scrapy.Field()
     item_index_in_page = scrapy.Field()
     name = scrapy.Field()
@@ -22,7 +23,6 @@ class VrItem(scrapy.Item):
     star_rating = scrapy.Field()
     introduce = scrapy.Field()
     icon_url = scrapy.Field()
-    detail_image_url = scrapy.Field()
     download_url = scrapy.Field()
 
 
@@ -32,6 +32,7 @@ class VrAppItem(VrItem):
     os = scrapy.Field()
     hardware_support = scrapy.Field()
     control_device = scrapy.Field()
+    detail_image_url = scrapy.Field()
 
 
 class VrMovieItem(VrItem):

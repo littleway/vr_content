@@ -17,6 +17,14 @@ class MovieSpider(ItemSpider):
 
     def item_parse(self, response):
         item = self._get_base_parsed_item(response)
+        # different to app html
+        try:
+            item['developer'] = self._str_post_process(
+                response.xpath('//p[@class="tool-developer"]/text()').extract()[0].strip())
+        except:
+            item['developer'] = 'NULL'
+        item['application_type'] = self._get_app_type(
+            response.xpath('//div[@class="tool-device mt5 clearfix"]'))
 
         post_body = self._get_download_post_body(response.xpath('//ul[@class="type-main clearfix"]/li/a'))
         yield Request("http://www.591vr.com/downloadApp.html", method="POST", body=post_body,
@@ -54,10 +62,21 @@ class AppSpider(ItemSpider):
                 response.xpath('//div[@class="tool-device mt5 clearfix"][1]/p/text()').extract()[0]
         except:
             item['control_device'] = 'NULL'
+        item['detail_image_url'] = self._get_detail_image_url(response.xpath('//ul[@class="rslides"]'))
 
         post_body = self._get_download_post_body(response.xpath('//ul[@class="type-main clearfix"]/li/a'))
         yield Request("http://www.591vr.com/downloadApp.html", method="POST", body=post_body,
                       meta={'item': item}, headers=self.post_header, callback=self.parse_download)
+
+    @staticmethod
+    def _get_detail_image_url(xpath_node):
+        url = []
+        for node in xpath_node.xpath('./li'):
+            try:
+                url.append(ItemSpider._str_post_process(node.xpath('./img/@src').extract()[0].strip()[0:-5]))
+            except:
+                url.append(ItemSpider._get_video_url(node.xpath('./iframe/@src').extract()[0]))
+        return url
 
     # # for one app test
     # def start_requests(self):
