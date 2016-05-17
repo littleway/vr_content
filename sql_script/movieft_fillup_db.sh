@@ -17,4 +17,4 @@ RESULT_FILE=mysql_movie_result
 $MYSQL_CMD --local-infile=1 -e "LOAD DATA LOCAL INFILE '$RESULT_FILE' INTO TABLE $MYSQL_REPORT_TABLE\
  FIELDS TERMINATED BY '\t'\
  (@dummy,@dummy,@dummy,@dummy,@dummy,@dummy,@dummy,@dummy,@dummy,full_url)\
- SET type=0, create_time=NOW();"
+ SET type=0, create_time=NOW(), update_time=NOW();"

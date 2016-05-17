@@ -17,3 +17,6 @@ code description:
 we have base class VrItem and ItemSpider because the app and movie html have some same fields and same processes
 so we abstract VrItem and ItemSpider for clean code looking
 
+
+sql_scrip:
+when 'load data infile' is used, remember transfer windows format to unix format

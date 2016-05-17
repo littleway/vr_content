@@ -17,4 +17,4 @@ RESULT_FILE=mysql_movie_result
 $MYSQL_CMD --local-infile=1 -e "LOAD DATA LOCAL INFILE '$RESULT_FILE' INTO TABLE $MYSQL_REPORT_TABLE\
  FIELDS TERMINATED BY '\t'\
  (name,@var1,category,tag,thumbnail_s,thumbnail_b,score,year,source_page,@dummy)\
- SET \`desc\`=@var1, full_desc=@var1, type=0, remarks=0, play_count=0, source_type=0, create_time=NOW();"
+ SET \`desc\`=@var1, full_desc=@var1, type=0, remarks=0, play_count=0, source_type=0, create_time=NOW(), update_time=NOW();"

@@ -17,4 +17,4 @@ RESULT_FILE=mysql_app_result
 $MYSQL_CMD --local-infile=1 -e "LOAD DATA LOCAL INFILE '$RESULT_FILE' INTO TABLE $MYSQL_REPORT_TABLE\
  FIELDS TERMINATED BY '\t'\
  (name,@var1,version,dtype,category,tag,thumbnail_s,thumbnail_b,score,download_url,vendor,source_page)\
- SET \`desc\`=@var1, full_desc=@var1, ptype=1, remarks=0, download_count=0, source_type=0, create_time=NOW();"
+ SET \`desc\`=@var1, full_desc=@var1, ptype=1, remarks=0, download_count=0, source_type=0, create_time=NOW(), update_time=NOW();"
