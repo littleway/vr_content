@@ -29,6 +29,15 @@ class MovieSpider(ItemSpider):
         yield Request("http://www.591vr.com/downloadApp.html", method="POST", body=post_body,
                       meta={'item': item}, headers=self.post_header, callback=self.parse_download)
 
+    @staticmethod
+    def parse_download(response):
+        download_url = json.loads(response.body)['obj']
+        if download_url.find("mp4") == -1:
+            return
+        response.meta['item']['download_url'] = ItemSpider._str_post_process(json.loads(response.body)['obj'])
+        yield response.meta['item']
+
+
 
 class AppSpider(ItemSpider):
     name = "android_app"
