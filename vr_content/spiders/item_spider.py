@@ -34,6 +34,8 @@ class ItemSpider(scrapy.Spider):
         for i in range(len(apps)):
             app = apps[i]
             url = "http://www.591vr.com" + app.xpath('./a/@href').extract()[0]
+            if self.name == "android_app":
+                url += "?pf=2"
             yield Request(url, dont_filter=True, callback=self.item_parse,
                           meta={"page_index": response.meta['page_index'], "item_index_in_page": str(i)})
 
@@ -49,6 +51,9 @@ class ItemSpider(scrapy.Spider):
         item['name'] = response.xpath('//h3/text()').extract()[0].strip()
         item['publish_date'] = self._str_post_process(
             response.xpath('//p[@class="publish-date"]/text()').extract()[1].strip())
+        # just get year
+        if item['publish_date'] != "NULL":
+            item['publish_date'] = item['publish_date'][0:item['publish_date'].find("-")]
         item['file_size_mb'] = self._get_file_size(
             response.xpath('//div[@class="tool-s-details clearfix"]/p[@class="file-size"]/text()').extract()[0].strip())
         item['language'] = self._str_post_process(
@@ -114,10 +119,10 @@ class ItemSpider(scrapy.Spider):
         is_begin = True
         for node in xpath_node.xpath('./span[2]/a'):
             if is_begin:
-                value += node.xpath('./text()').extract()[0].strip() + '>'
+                # value += node.xpath('./text()').extract()[0].strip() + '>'
                 is_begin = False
             else:
-                value += node.xpath('./text()').extract()[0].strip() + ' '
+                value += node.xpath('./text()').extract()[0].strip() + ','
         return value[0:-1]
 
     def _get_file_size(self, file_size_str):

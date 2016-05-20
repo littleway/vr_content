@@ -17,6 +17,35 @@ NEWSPIDER_MODULE = 'vr_content.spiders'
 FEED_EXPORTERS = {
     'csv': 'vr_content.my_csv_item_exporter.MyCsvItemExporter',
 }
+# mysql app
+FIELDS_TO_EXPORT = [
+    'name',
+    'introduce',
+    'version',
+    'hardware_support',
+    'application_type',
+    'tags',
+    'icon_url',
+    'detail_image_url',
+    'star_rating',
+    'download_url',
+    'developer',
+    'item_url',
+]
+# mysql movie
+# FIELDS_TO_EXPORT = [
+#     'name',
+#     'introduce',
+#     'application_type',
+#     'tags',
+#     'icon_url',
+#     'icon_url',
+#     'star_rating',
+#     'publish_date',
+#     'item_url',
+#     'download_url'
+# ]
+
 # # output by my order
 # #for app
 # FIELDS_TO_EXPORT = [
@@ -41,23 +70,23 @@ FEED_EXPORTERS = {
 #     'download_url'
 # ]
 # for movie
-FIELDS_TO_EXPORT = [
-    'item_url',
-    'page_index',
-    'item_index_in_page',
-    'name',
-    'publish_date',
-    'file_size_mb',
-    'language',
-    'version',
-    'developer',
-    'application_type',
-    'tags',
-    'star_rating',
-    'introduce',
-    'icon_url',
-    'download_url'
-]
+# FIELDS_TO_EXPORT = [
+#     'item_url',
+#     'page_index',
+#     'item_index_in_page',
+#     'name',
+#     'publish_date',
+#     'file_size_mb',
+#     'language',
+#     'version',
+#     'developer',
+#     'application_type',
+#     'tags',
+#     'star_rating',
+#     'introduce',
+#     'icon_url',
+#     'download_url'
+# ]
 CSV_DELIMITER = "\t" # For tab
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

@@ -1,8 +1,7 @@
-import scrapy
 from scrapy.http.request import Request
-from scrapy.http import Headers
 from vr_content.items import VrAppItem
 from vr_content.spiders.item_spider import ItemSpider
+import json
 
 
 class MovieSpider(ItemSpider):
@@ -64,9 +63,19 @@ class AppSpider(ItemSpider):
             item['control_device'] = 'NULL'
         item['detail_image_url'] = self._get_detail_image_url(response.xpath('//ul[@class="rslides"]'))
 
-        post_body = self._get_download_post_body(response.xpath('//ul[@class="type-main clearfix"]/li/a'))
+        download_node = response.xpath('//span[@class="type-text fl"]/i[@class="ui-icon android-ico"]')
+        download_node = download_node.xpath('../..')
+        post_body = self._get_download_post_body(download_node)
         yield Request("http://www.591vr.com/downloadApp.html", method="POST", body=post_body,
                       meta={'item': item}, headers=self.post_header, callback=self.parse_download)
+
+    @staticmethod
+    def parse_download(response):
+        download_url = json.loads(response.body)['obj']
+        if download_url.find(".apk") == -1:
+            return
+        response.meta['item']['download_url'] = ItemSpider._str_post_process(json.loads(response.body)['obj'])
+        yield response.meta['item']
 
     @staticmethod
     def _get_detail_image_url(xpath_node):
@@ -75,7 +84,8 @@ class AppSpider(ItemSpider):
             try:
                 url.append(ItemSpider._str_post_process(node.xpath('./img/@src').extract()[0].strip()[0:-5]))
             except:
-                url.append(ItemSpider._get_video_url(node.xpath('./iframe/@src').extract()[0]))
+                # url.append(ItemSpider._get_video_url(node.xpath('./iframe/@src').extract()[0]))
+                pass
         return url
 
     # # for one app test
